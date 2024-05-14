@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -20,7 +19,6 @@ public class MemberService {
         member.setNickname(nickname);
         member.setEmail(email);
         member.setCreateDate(LocalDateTime.now());
-
         return memberRepository.save(member);
     }
 }

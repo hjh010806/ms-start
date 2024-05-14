@@ -8,7 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 
 @Configuration
 @EnableWebSecurity
@@ -17,21 +19,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "signup").permitAll()
+                        .requestMatchers("/login", "/signup").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(formLogin ->
                         formLogin.loginPage("/login")
                                 .defaultSuccessUrl("/")
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/login"))
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .invalidateHttpSession(true)
-                        .logoutSuccessUrl("/login")
+                        .logoutSuccessUrl("/")
                 );
-           return http.build();
+
+        return http.build();
     }
 
     @Bean

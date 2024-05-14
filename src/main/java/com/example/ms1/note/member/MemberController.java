@@ -9,7 +9,6 @@ import lombok.Setter;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
@@ -38,14 +37,12 @@ public class MemberController {
 
     @PostMapping("/signup")
     public String signup(@Valid MemberForm memberForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors())
             return "signup_form";
-        }
 
         memberService.save(memberForm.getLoginId(), memberForm.getPassword(), memberForm.getNickname(), memberForm.getEmail());
 
         return "redirect:/";
-
     }
 
     @GetMapping("/login")

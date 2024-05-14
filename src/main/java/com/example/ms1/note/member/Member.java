@@ -1,6 +1,7 @@
 package com.example.ms1.note.member;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,9 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Setter
 @Getter
+@Setter
+@Entity
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

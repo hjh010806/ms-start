@@ -2,6 +2,8 @@ package com.example.ms1.note;
 
 import com.example.ms1.note.note.Note;
 import com.example.ms1.note.note.NoteService;
+import com.example.ms1.note.note.tag.tag.Tag;
+import com.example.ms1.note.note.tag.tag.TagService;
 import com.example.ms1.note.notebook.Notebook;
 import com.example.ms1.note.notebook.NotebookRepository;
 import com.example.ms1.note.notebook.NotebookService;
@@ -16,6 +18,8 @@ import java.util.List;
 public class MainService {
     private final NotebookService notebookService;
     private final NoteService noteService;
+    private final TagService tagService;
+
     public MainDataDto getDefaultMainData(String keyword) {
         List<Notebook> notebookList = notebookService.getNotebookList();
         if (notebookList.isEmpty()) {
@@ -27,8 +31,9 @@ public class MainService {
         Note targetNote = noteList.get(0);
         List<Notebook> searchNotebookList = notebookService.getSearchNotebookList(keyword);
         List<Note> searchNoteList = noteService.getSearchNoteList(keyword);
+        List<Tag> tagList = tagService.getTagList();
 
-        MainDataDto mainDataDto = new MainDataDto(notebookList, targetNotebook, noteList, targetNote, searchNotebookList, searchNoteList);
+        MainDataDto mainDataDto = new MainDataDto(notebookList, targetNotebook, noteList, targetNote, searchNotebookList, searchNoteList, tagList);
         return mainDataDto;
     }
     public MainDataDto getMainData(Long notebookId, Long noteId, String keyword, String sort) {

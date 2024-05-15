@@ -1,4 +1,4 @@
-<html lang="ko" layout:decorate="~{layout}">
+<html lang="ko" layout:decorate="~{layout}" xmlns="http://www.w3.org/1999/html">
 <body>
 <div layout:fragment="content"
      th:with="notebookList=${mainDataDto.notebookList},
@@ -6,7 +6,8 @@
         targetNotebook=${mainDataDto.targetNotebook},
         targetNote=${mainDataDto.targetNote},
         searchedNotebookList=${mainDataDto.searchedNotebookList},
-        searchedNoteList=${mainDataDto.searchedNoteList}
+        searchedNoteList=${mainDataDto.searchedNoteList},
+        tagList=${mainDataDto.tagList}
 ">
 
 
@@ -99,6 +100,33 @@
                     </div>
                 </div>
             </div>
+            <!-- 태그 목록 -->
+            <button class="btn" onclick="tagModal.showModal()">태그 목록</button>
+            <dialog id="tagModal" class="modal">
+                <div class="modal-box h-[550px]">
+                    <h1>태그 목록</h1>
+                    <ul class="h-[30%] border-2 overflow-auto flex flex-wrap gap-2">
+                        <li th:each="tag : ${tagList}" class="w-[20%]">
+                            <a th:data-url="@{|/tags/${tag.id}/notes|}" th:text="${tag.name}"
+                               class="tagItem p-[15px] w-[100%] h-[100%] inline-block text-center text-[0.8rem] hover:bg-blue-500 hover:text-white"
+                               th:classappend="${targetTag != null and targetTag.id == tag.id} ? 'bg-blue-600' : ''"
+                               th:data-notebook-id="${targetNotebook.id}" th:data-note-id="${targetNote.id}"></a>
+                        </li>
+                    </ul>
+                    <ul class="h-[50%] border-2 overflow-auto"
+                        th:with="itemHover='hover:bg-blue-600 hover:text-white p-[10px] flex', itemAnchorClass='getActionBtn inline-block w-[100%]'">
+                        <li th:each="note : ${noteListByTag}" th:class="${itemHover}">
+                            <a th:data-url="@{|/books/${note.notebook.id}/notes/${note.id}|}" th:text="${note.title}"
+                               th:class="${itemAnchorClass}"></a>
+                        </li>
+                    </ul>
+                    <div class="modal-action">
+                        <form method="dialog">
+                            <button class="btn">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
         </div>
         <div class="bg-red-300 w-[20%] h-[800px] text-center ">
             <ul class="h-[100%] overflow-scroll">
@@ -150,6 +178,7 @@
         </div>
         <div>
             <input type="hidden" id="isSearchModal" name="isSearchModal" th:value="${paramHandler.isSearchModal}">
+            <input type="hidden" id="isTagModal" name="isTagModal" th:value="${paramHandler.isTagModal}">
         </div>
     </div>
     <script th:inline="javascript">
@@ -184,9 +213,13 @@
     <script>
         window.onload = () => {
             const isSearchModal = document.querySelector("#isSearchModal").value;
+            const isTagModal = document.querySelector("#isTagModal").value;
         
             if(JSON.parse(isSearchModal)){
             searchModal.showModal();
+            }
+            if(JSON.parse(isTagModal)){
+            tagModal.showModal();
             }
 
             // 폼을 싹 다 가져올 것.
@@ -274,6 +307,18 @@
             });
             return params;
         }
+    </script>
+    <script>
+        // 태그 목록 스크립트
+        document.querySelectorAll(".tagItem").forEach((tagItem) =>{
+            tagItem.addEventListener("click", (e) => {
+                getAction(e.target, (params) => {
+                    params.notebookId = e.target.dataset.notebookId;
+                    params.noteId = e.target.dataset.noteId;
+                    params.isTagModal = true;
+                });
+            });
+        });
     </script>
 </div>
 </body>
